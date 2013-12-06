@@ -12,6 +12,8 @@ echo "Launch an instance ... "
 uuid=`nova boot --image 034f7d4d-4ec2-424d-bbff-a4b8809dc01d --flavor m1.small --security_groups sa-test --key_name ray_nectar --availability_zone sa lei-test-BBB|awk '{if($2=="id") print $4}'`
 echo "$uuid"
 
+start_time=`date +%s`
+
 stat=`nova list|grep $uuid|awk '{print $6}'`
 count=0
 until [ x"$stat" == "xACTIVE" -o  x"$stat" == "xERROR" ]
@@ -64,7 +66,9 @@ do
 	sleep $sleep_time
 done
 
-echo "SUCCESS"
+end_time=`date +%s`
+booting_time=`expr $end_time - $start_time`
+echo "Successfully booted in $booting_time seconds"
 
 nova delete $uuid
 kill -9 $pid
