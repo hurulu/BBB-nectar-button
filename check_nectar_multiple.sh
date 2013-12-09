@@ -10,16 +10,12 @@ num_instance=$1
 #Make LED flash
 ./blink.py &
 pid=$!
-retry_max=10
-retry_interval=3
-
 
 function start_instances
 {
-	echo "Launch $num_instance instances ... "
+	echo "Starting $num_instance instances ... "
 	for((i=0;i<num_instance;i++))
 	do
-#		uuid=`nova boot --image 034f7d4d-4ec2-424d-bbff-a4b8809dc01d --flavor m1.small --security_groups sa-test --key_name ray_nectar --availability_zone sa lei-test-BBB-$i|awk '{if($2=="id") print $4}'`
 		uuid=`nova boot --image $TEST_IMAGE_ID --flavor $TEST_FLAVOR --security_groups $TEST_SEC_GROUP --key_name $TEST_KEY_NAME --availability_zone $TEST_AVA_ZONE ${TEST_INSTANCE_NAME_BASE}-$i|awk '{if($2=="id") print $4}'`
 		uuid_array[$i]=$uuid
 		echo ${uuid_array[$i]}
@@ -34,6 +30,7 @@ function delete_instances
 		echo $i
 		nova delete $i
 	done
+	echo "All done!Now you may push the button again."
 }
 
 function script_exit
@@ -63,9 +60,14 @@ function check_build_command
 {
 	uuid=$1
 	index=$2
-	echo -ne "Check $i [${ip_array[$index]}] ... "
-	stat=`nova list|grep $uuid|awk '{print $6}'`
+	stat_line=`nova list|grep $uuid`
+	stat=`echo $stat_line|awk '{print $6}'`
+	ip=`echo $stat_line|awk '{print $8}'|cut -d= -f2`
+	echo -ne "Check $uuid [$ip] ... "
         if [ x"$stat" == "xACTIVE" ];then
+		if [ x"$ip" != "x" ];then
+			ip_array[$index]=$ip
+		fi
 		return 0
         elif [ x"$stat" == "xERROR" ];then
                 script_exit 1

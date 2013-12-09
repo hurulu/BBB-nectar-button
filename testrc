@@ -7,3 +7,5 @@ export TEST_KEY_FILE=ray_nectar.pem
 export TEST_AVA_ZONE=sa
 export TEST_INSTANCE_NAME_BASE=lei-test-BBB
 export TEST_INSTANCE_USER=ubuntu
+export retry_max=10
+export retry_interval=3

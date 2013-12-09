@@ -13,11 +13,12 @@ GPIO.output("P8_15", GPIO.LOW)
 old_switch_state = 0
 num_instances = 0
 sleep_time=0.5
+print "Press (and hold) the button to launch instance(s) ... "
 while True:
 	new_switch_state = GPIO.input("P8_12")
 	#button pressed
 	if new_switch_state == 1 and old_switch_state == 0 :
-		print "Counting the instance numbers ..."
+		print "Counting the instance number ..."
 		old_switch_state = new_switch_state
 	#button pressed and hold
 	elif new_switch_state == 1 and old_switch_state == 1 :
@@ -27,7 +28,7 @@ while True:
 		old_switch_state = new_switch_state
 	#Button released
 	elif new_switch_state == 0 and old_switch_state == 1 :
-		print "Starting ",num_instances, " instances ..."
+		print "Go!"
 		GPIO.output("P8_15", GPIO.LOW)
 		status = os.system("%s %d"%("./check_nectar_multiple.sh",num_instances))
 		#print status
@@ -41,5 +42,4 @@ while True:
 		time.sleep(sleep_time)
 		num_instances = 0
 		old_switch_state = new_switch_state
-
 
