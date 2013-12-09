@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source novarc
+source testrc
 if [ $# -ne 1 ];then
 	echo "$0 num_of_instances"
 	exit 1
@@ -18,7 +19,8 @@ function start_instances
 	echo "Launch $num_instance instances ... "
 	for((i=0;i<num_instance;i++))
 	do
-		uuid=`nova boot --image 034f7d4d-4ec2-424d-bbff-a4b8809dc01d --flavor m1.small --security_groups sa-test --key_name ray_nectar --availability_zone sa lei-test-BBB-$i|awk '{if($2=="id") print $4}'`
+#		uuid=`nova boot --image 034f7d4d-4ec2-424d-bbff-a4b8809dc01d --flavor m1.small --security_groups sa-test --key_name ray_nectar --availability_zone sa lei-test-BBB-$i|awk '{if($2=="id") print $4}'`
+		uuid=`nova boot --image $TEST_IMAGE_ID --flavor $TEST_FLAVOR --security_groups $TEST_SEC_GROUP --key_name $TEST_KEY_NAME --availability_zone $TEST_AVA_ZONE ${TEST_INSTANCE_NAME_BASE}-$i|awk '{if($2=="id") print $4}'`
 		uuid_array[$i]=$uuid
 		echo ${uuid_array[$i]}
 	done
@@ -81,7 +83,7 @@ function check_ssh_command
 		ip_array[$index]=$ip
 	fi
 	echo -ne "Check $i [${ip_array[$index]}] ... "
-	ssh -i ray_nectar.pem -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" ubuntu@$ip "true" &>/dev/null
+	ssh -i $TEST_KEY_FILE -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" ${TEST_INSTANCE_USER}@$ip "true" &>/dev/null
 	return $?
 }
 
