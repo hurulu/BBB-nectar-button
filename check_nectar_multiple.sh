@@ -28,8 +28,10 @@ function start_instances
 
 function delete_instances
 {
+	echo "Deleteing instances ..."
 	for i in ${uuid_array[@]}
 	do
+		echo $i
 		nova delete $i
 	done
 }
