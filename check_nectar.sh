@@ -1,5 +1,7 @@
 #!/bin/bash
 
+dir=`dirname $0`
+cd $dir
 source novarc
 source testrc
 if [ $# -ne 1 ];then
@@ -37,7 +39,7 @@ function delete_instances
 		echo $i
 		nova delete $i
 	done
-	echo "All done!Now you may push the button again."
+	echo "All done!"
 }
 
 function script_exit

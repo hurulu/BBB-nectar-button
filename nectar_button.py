@@ -42,4 +42,5 @@ while True:
 		time.sleep(sleep_time)
 		num_instances = 0
 		old_switch_state = new_switch_state
+		print "Press (and hold) the button to launch instance(s) ... "
 
