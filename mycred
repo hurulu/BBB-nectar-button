@@ -1,0 +1,6 @@
+#!/bin/bash
+export OS_AUTH_URL=https://keystone.rc.nectar.org.au:5000/v2.0/
+export OS_TENANT_ID=
+export OS_TENANT_NAME=
+export OS_USERNAME=
+export OS_PASSWORD=
