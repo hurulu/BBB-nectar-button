@@ -47,11 +47,19 @@ function status_array_init
 		status_array[$i]=1
 	done
 }
+function ip_array_init
+{
+	for((i=0;i<num_instance;i++))
+	do
+		ip_array[$i]=""
+	done
+}
 
 function check_build_command
 {
 	uuid=$1
-	echo -ne "Check instances building status of $uuid ... "
+	index=$2
+	echo -ne "Check $i [${ip_array[$index]}] ... "
 	stat=`nova list|grep $uuid|awk '{print $6}'`
         if [ x"$stat" == "xACTIVE" ];then
 		return 0
@@ -66,16 +74,21 @@ function check_build_command
 function check_ssh_command
 {
 	uuid=$1
-	ip=`nova list|grep $uuid|awk '{print $8}'|cut -d= -f2`
-	echo -ne "Check instances ssh $status of $ip  ... "
+	index=$2
+	ip=${ip_array[$index]}
+	if [ x"$ip" == "x" ];then
+		ip=`nova list|grep $uuid|awk '{print $8}'|cut -d= -f2`
+		ip_array[$index]=$ip
+	fi
+	echo -ne "Check $i [${ip_array[$index]}] ... "
 	ssh -i ray_nectar.pem -o "StrictHostKeyChecking no" -o "UserKnownHostsFile /dev/null" ubuntu@$ip "true" &>/dev/null
 	return $?
 }
 
 function check_framework
 {
-	echo "Starting check loop ..."
 	command=$1
+	echo "Starting $command loop ..."
 	check_result=1
 	retry=1
 	while [ $check_result -ne 0 -o $retry -le $retry_max ]
@@ -87,11 +100,11 @@ function check_framework
 		for i in ${uuid_array[@]}
 		do
 			if [ ${status_array[$index]} -eq 0 ];then
-				echo "skip"
+				echo "Check $i [${ip_array[$index]}] ... skip"
 				index=`expr $index + 1`
 				continue
 			fi
-			$command $i
+			$command $i $index
 			stat=$?
 			if [ $stat -eq 0 ];then
 				status_array[$index]=0
@@ -120,6 +133,7 @@ start_time=`date +%s`
 status_array_init
 check_framework check_build_command
 status_array_init
+ip_array_init
 check_framework check_ssh_command
 end_time=`date +%s`
 booting_time=`expr $end_time - $start_time`
