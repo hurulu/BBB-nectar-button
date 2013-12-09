@@ -7,9 +7,16 @@ if [ $# -ne 1 ];then
 	exit 1
 fi
 num_instance=$1
+
+function blink_led
+{
 #Make LED flash
-./blink.py &
-pid=$!
+	uname -r|grep bone &>/dev/null
+	if [ $? -eq 0 ];then
+		./blink.py &
+		pid=$!
+	fi
+}
 
 function start_instances
 {
@@ -38,7 +45,9 @@ function script_exit
 	exit_value=$1
 	echo "exit $exit_value ..."
 	delete_instances
-	kill -9 $pid
+	if [ $pid ];then 
+		kill -9 $pid
+	fi
 	exit $exit_value
 }
 function status_array_init
@@ -97,7 +106,7 @@ function check_framework
 	echo "Starting $command loop ..."
 	check_result=1
 	retry=1
-	while [ $check_result -ne 0 -o $retry -le $retry_max ]
+	while [ $check_result -ne 0 -a $retry -le $retry_max ]
 	do
 		check_result=0
 		echo "Round $retry :"
@@ -134,6 +143,7 @@ function check_framework
 # MAIN starts here
 #####################
 trap "script_exit 1" SIGINT
+blink_led
 start_instances
 start_time=`date +%s`
 status_array_init
