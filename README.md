@@ -1,9 +1,8 @@
-
 # NeCTAR Button on Beaglebone Black(BBB)
 
 ## Overview
 
-This project is to make a button that can start and monitor instances on NeCTAR research cloud (Openstack Cloud). 
+This project is to make a button that can start and monitor instances on NeCTAR research cloud (Openstack Cloud). Simply click on the button, you can start one or more(depending how long you press the button) predefined NeCTAR test instances and monitor their status by LEDs. All the test instances will be terminated no matter what status they are in.
 
 ## Components
 * BeagleBone Black (With Ubuntu 13.04)
@@ -16,7 +15,7 @@ This project is to make a button that can start and monitor instances on NeCTAR 
 * 7*Male to Male jumper wires
 
 ## Operating System and Software
-* [Install Ubuntu 13.04 on BBB](http://elinux.org/BeagleBoardUbuntu#Raring_13.04)
+* [Install Ubuntu 13.04 on BBB](http://elinux.org/BeagleBoardUbuntu#Raring_13.04), and make sure the BBB can access the internet.
 * [Install the Adafruit-BeagleBone-IO-Python on BBB](http://learn.adafruit.com/setting-up-io-python-library-on-beaglebone-black/installation-on-ubuntu)
 * Install nova client : ```apt-get install python-novaclient```
 
