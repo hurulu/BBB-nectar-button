@@ -30,7 +30,7 @@ while True:
 	elif new_switch_state == 0 and old_switch_state == 1 :
 		print "Go!"
 		GPIO.output("P8_15", GPIO.LOW)
-		status = os.system("%s %d"%("./check_nectar_multiple.sh",num_instances))
+		status = os.system("%s %d"%("./check_nectar.sh",num_instances))
 		#print status
 		if status == 0:
 			GPIO.output("P8_13", GPIO.HIGH)
